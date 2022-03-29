@@ -79,7 +79,7 @@ importers:
   packages/upload:
     specifiers:
       '@ipld/car': ^4.0.0
-      '@ipld/unixfs': ^1.0.2-dev
+      '@ipld/unixfs': ^1.0.3-dev
       '@noble/hashes': ^1.0.0
       '@types/mocha': ^9.1.0
       '@types/node': ^17.0.21
@@ -103,7 +103,7 @@ importers:
       watch: ^1.0.2
     dependencies:
       '@ipld/car': 4.0.0
-      '@ipld/unixfs': 1.0.2-dev
+      '@ipld/unixfs': 1.0.3-dev
       '@noble/hashes': 1.0.0
       '@web-std/blob': 3.0.4
       '@web-std/fetch': 4.0.0
@@ -217,8 +217,8 @@ packages:
       multiformats: 9.6.4
     dev: false
 
-  /@ipld/unixfs/1.0.2-dev:
-    resolution: {integrity: sha512-chedeZHkABO+9Vcf1b5+cD9lUBdsVxAof/5/FEJQyp8ULetAI/W+Qf5kQZfg9914PxpkLezrvjJ4G1f+856RDQ==}
+  /@ipld/unixfs/1.0.3-dev:
+    resolution: {integrity: sha512-UjuT84Ma10/vX6A1Jf6SlNJ6r4Y2g86VJcI9LwK3s3g2yfFTVo8tNXlTVTJ39JpevWm0FQ5sfz6r7/j8pu686A==}
     dependencies:
       '@ipld/dag-pb': 2.1.16
       '@web-std/stream': 1.0.1

@@ -38,7 +38,7 @@
   ],
   "dependencies": {
     "@ipld/car": "^4.0.0",
-    "@ipld/unixfs": "^1.0.2-dev",
+    "@ipld/unixfs": "^1.0.3-dev",
     "@noble/hashes": "^1.0.0",
     "@web-std/blob": "^3.0.4",
     "@web-std/fetch": "^4.0.0",
