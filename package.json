@@ -15,7 +15,7 @@
   "devDependencies": {
     "hd-scripts": "^1.1.1",
     "lint-staged": "^12.3.7",
-    "prettier": "2.5.1",
+    "prettier": "2.6.1",
     "simple-git-hooks": "^2.7.0",
     "typedoc": "^0.22.13",
     "typedoc-plugin-missing-exports": "^0.22.6",
