@@ -1,4 +1,4 @@
-import * as FileImporter from '@ipld/unixfs/src/file'
+import * as FileImporter from '@ipld/unixfs/src/file.js'
 import { CarWriter } from '@ipld/car'
 import { create as multihash } from 'multiformats/hashes/digest'
 import { CID } from 'multiformats/cid'
