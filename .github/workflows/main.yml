@@ -71,4 +71,4 @@ jobs:
       - run: pnpm -r publish --tag next --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-        if: ${{ steps.release.outputs.release_created }}
+        # if: ${{ steps.release.outputs.release_created }}
