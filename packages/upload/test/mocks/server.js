@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import dotenv from 'dotenv'
 import path from 'path'
-import { signer } from '@web-storage/signer'
+import { signer } from '@web3-storage/signer'
 import polka from 'polka'
 import { fileURLToPath } from 'url'
 

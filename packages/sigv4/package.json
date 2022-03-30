@@ -1,6 +1,6 @@
 {
   "name": "@web3-storage/sigv4",
-  "version": "0.0.1-dev",
+  "version": "0.0.2-dev",
   "main": "src/index.js",
   "types": "dist/src/index.d.ts",
   "typedocMain": "dist/src/index.js",
@@ -14,8 +14,7 @@
     ".": "./src/index.js"
   },
   "scripts": {
-    "lint": "eslint '**/*.{js,ts}' && prettier --check '**/*.{js,ts,md,yml,json}' --ignore-path ../../.gitignore && tsc",
-    "docs": "pnpm run lint && typedoc src/ucan-storage.js src/keypair.js --out docs",
+    "lint": "tsc && eslint '**/*.{js,ts}' && prettier --check '**/*.{js,ts,md,yml,json}' --ignore-path ../../.gitignore",
     "test": "DOTENV_CONFIG_PATH=../../.env mocha -r dotenv/config",
     "test-browser": "pw-test test",
     "testw": "watch 'pnpm test' src test --interval 1"

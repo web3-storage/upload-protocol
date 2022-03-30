@@ -1,6 +1,6 @@
 {
   "name": "@web3-storage/upload",
-  "version": "0.0.1-dev",
+  "version": "0.0.2-dev",
   "main": "src/index.js",
   "types": "dist/src/index.d.ts",
   "typedocMain": "dist/src/index.js",
@@ -24,8 +24,7 @@
     }
   },
   "scripts": {
-    "lint": "eslint '**/*.{js,ts}' && prettier --check '**/*.{js,ts,md,yml,json}' --ignore-path ../../.gitignore && tsc",
-    "docs": "pnpm run lint && typedoc src/ucan-storage.js src/keypair.js --out docs",
+    "lint": "tsc && eslint '**/*.{js,ts}' && prettier --check '**/*.{js,ts,md,yml,json}' --ignore-path ../../.gitignore",
     "test": "DOTENV_CONFIG_PATH=../../.env mocha -r dotenv/config -r test/mocks/hooks.js",
     "test-browser": "pw-test test",
     "testw": "watch 'pnpm test' src test --interval 1",
@@ -42,7 +41,7 @@
     "@noble/hashes": "^1.0.0",
     "@web-std/blob": "^3.0.4",
     "@web-std/fetch": "^4.0.0",
-    "@web-storage/signer": "workspace:*",
+    "@web3-storage/signer": "workspace:*",
     "conf": "^10.1.1",
     "multiformats": "^9.6.4",
     "ora": "^6.1.0",

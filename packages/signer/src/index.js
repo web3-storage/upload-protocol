@@ -1,7 +1,7 @@
 import { UcanChain } from 'ucan-storage/ucan-chain'
 import { CID } from 'multiformats/cid'
 import { base64pad } from 'multiformats/bases/base64'
-import { SigV4 } from '@web-storage/sigv4'
+import { SigV4 } from '@web3-storage/sigv4'
 
 const DIDs = new Set([
   'did:key:z6MknjRbVGkfWK1x5gyJZb6D4LjMj1EsitFzcSccS3sAaviQ',
