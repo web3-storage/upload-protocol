@@ -31,7 +31,7 @@ export async function signer(ucan, opts) {
 
   const resource = caps[0]
 
-  const cid = CID.parse(resource.with.replace('storage+car://', ''))
+  const cid = CID.parse(resource.with.replace('storage://', ''))
   const checksum = base64pad.baseEncode(cid.multihash.digest)
   const url = sig.sign({
     bucket: process.env.S3_BUCKET || '',

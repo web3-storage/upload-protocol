@@ -21,7 +21,7 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install
       - run: pnpm run lint
-      # - run: pnpm run test
+      - run: pnpm run test
   # test-browser-linux:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -64,8 +64,8 @@ jobs:
         with:
           branch: gh-pages
           folder: docs
-      # - run: pnpx tsc
-      # - run: npm publish
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      #   if: ${{ steps.release.outputs.release_created }}
+      - run: pnpm run lint
+      - run: pnpm -r publish --tag next --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        if: ${{ steps.release.outputs.release_created }}

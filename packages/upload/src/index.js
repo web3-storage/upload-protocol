@@ -63,9 +63,9 @@ export async function sign(cid, privateKey, ucanProof) {
     proofs: [ucanProof],
     capabilities: [
       {
-        with: `storage+car://${cid}`,
+        with: `storage://${cid}`,
         // @ts-ignore - needs new semantics
-        can: 'upload/PRESIGNED',
+        can: 'upload/IMPORT',
       },
     ],
   })
