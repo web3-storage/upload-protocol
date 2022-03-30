@@ -1,5 +1,5 @@
 {
-  "name": "@web-storage/signer",
+  "name": "@web3-storage/signer",
   "version": "0.0.1-dev",
   "main": "src/index.js",
   "types": "dist/src/index.d.ts",

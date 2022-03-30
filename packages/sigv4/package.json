@@ -1,5 +1,5 @@
 {
-  "name": "@web-storage/sigv4",
+  "name": "@web3-storage/sigv4",
   "version": "0.0.1-dev",
   "main": "src/index.js",
   "types": "dist/src/index.d.ts",

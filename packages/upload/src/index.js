@@ -18,6 +18,7 @@ export async function pack(stream) {
   for await (const chunk of iterate(stream)) {
     await writer.write(chunk)
   }
+
   const root = await writer.close()
 
   // car
