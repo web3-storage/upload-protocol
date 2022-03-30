@@ -22,6 +22,9 @@ jobs:
       - run: pnpm install
       - run: pnpm run lint
       - run: pnpm run test
+        env:
+          PRIVATE_KEY: secrets.PRIVATE_KEY
+          ROOT_UCAN: secrets.ROOT_UCAN
   # test-browser-linux:
   #   runs-on: ubuntu-latest
   #   steps:
