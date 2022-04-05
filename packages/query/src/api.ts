@@ -34,8 +34,6 @@ export interface Remove {
   link: CARLink
 }
 
-type CARLink = CID<1, 0x0202, typeof sha256.code>
-
 export type Invoke<
   T extends Capability,
   To extends DID = DID,
