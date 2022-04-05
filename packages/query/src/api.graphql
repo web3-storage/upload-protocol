@@ -1,0 +1,116 @@
+input AddInput {
+  with: ID
+  link: ID
+}
+
+input RemoveInput {
+  with: ID
+  link: ID
+}
+
+type AddOk {
+  """
+  Will be will be "status/ok"
+  """
+  can: String!
+
+  with: String!
+  link: String!
+}
+
+type AddError {
+  """
+  will be "status/error"
+  """
+  can: String!
+  """
+  reason for error
+  """
+  message: String!
+
+  with: String!
+  link: String!
+}
+
+type AddPending {
+  """
+  will be "status/pending"
+  """
+  can: String!
+  with: String!
+  link: String!
+  """
+  URL to upload content at
+  """
+  to: String!
+}
+
+type RemoveOk {
+  """
+  Will be will be "status/ok"
+  """
+  can: String!
+
+  with: String!
+  link: String!
+}
+
+type RemoveError {
+  """
+  will be "status/error"
+  """
+  can: String!
+  """
+  reason for error
+  """
+  message: String!
+
+  with: String!
+  link: String!
+}
+
+union AddResult = AddOk | AddError | AddPending
+union RemoveResult = RemoveOk | RemoveError
+
+input IdentifyInput {
+  can: String!
+  with: String!
+  as: String!
+}
+
+input AuthorizeInput {
+  can: String!
+  with: String!
+  capabilities: [Capability!]
+}
+
+union Capability = AddCapability | RemoveCapability
+
+type AddCapability {
+  can: String!
+  with: String!
+  link: String
+}
+
+type RemoveCapability {
+  can: String!
+  with: String!
+  link: String
+}
+
+type Query {
+  accessAuthorize(input: AuthorizeInput): AuthorizeResult!
+}
+
+type Mutation {
+  storeAdd(input: AddInput!): AddResult!
+  storeRemove(input: RemoveInput!): RemoveResult!
+
+  accessIdentify(input: IdentifyInput): IdentifyResult!
+  accessRevoke(input: RevokeInput): RevokeResult!
+}
+
+type schema {
+  query: Query
+  mutation: Mutation
+}

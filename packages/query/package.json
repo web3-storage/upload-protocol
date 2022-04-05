@@ -1,0 +1,80 @@
+{
+  "name": "@web3-storage/query",
+  "version": "0.0.2-dev",
+  "main": "src/main.js",
+  "types": "dist/src/main.d.ts",
+  "typedocMain": "dist/src/main.js",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "url": "web3-storage/upload-protocol",
+    "directory": "packages/query"
+  },
+  "exports": {
+    ".": "./src/main.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/src/*"
+      ],
+      "types": [
+        "src/types.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "lint": "tsc && eslint '**/*.{js,ts}' && prettier --check '**/*.{js,ts,md,yml,json}' --ignore-path ../../.gitignore",
+    "test": "DOTENV_CONFIG_PATH=../../.env mocha -r dotenv/config -r test/mocks/hooks.js",
+    "typecheck": "tsc --bulid",
+    "test-browser": "pw-test test",
+    "testw": "watch 'pnpm test' src test --interval 1",
+    "server": "node test/mocks/server.js"
+  },
+  "files": [
+    "src",
+    "dist/src/*.d.ts",
+    "dist/src/*.d.ts.map"
+  ],
+  "dependencies": {
+    "@ipld/car": "^4.0.0",
+    "multiformats": "^9.6.4",
+    "subprogram": "^1.2.0",
+    "@web-std/fetch": "^4.0.0",
+    "ucan-storage": "^1.1.3"
+  },
+  "devDependencies": {
+    "@types/mocha": "^9.1.0",
+    "@types/chai": "^4.3.0",
+    "dotenv": "^16.0.0",
+    "mocha": "^9.2.2",
+    "chai": "^4.3.6",
+    "playwright-test": "^7.3.0",
+    "conf": "^10.1.1",
+    "ora": "^6.1.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "../../node_modules/hd-scripts/eslint/index.js"
+    ],
+    "ignorePatterns": [
+      "pw-test.config.cjs"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "env": {
+      "mocha": true
+    },
+  },
+  "eslintIgnore": [
+    "node_modules",
+    "coverage",
+    "dist",
+    "docs",
+    "src/**/*.js"
+  ],
+  "engines": {
+    "node": ">= 14.0.0"
+  }
+}
