@@ -1,4 +1,3 @@
-import type { Link, DID } from '@ipld/dag-ucan'
 
 export interface Context<DID, Link, Token> {
   proofs: ProofsProvider<Token>
