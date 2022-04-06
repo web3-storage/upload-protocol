@@ -37,7 +37,8 @@
     "dist/src/*.d.ts.map"
   ],
   "dependencies": {
-    "@ipld/car": "^4.0.0",
+    "@ipld/car": "^4.1.0",
+    "@ipld/dag-cbor": "^7.0.1",
     "multiformats": "^9.6.4",
     "subprogram": "^1.2.0",
     "@web-std/fetch": "^4.0.0",
@@ -54,27 +55,14 @@
     "conf": "^10.1.1",
     "ora": "^6.1.0"
   },
-  "eslintConfig": {
-    "extends": [
-      "../../node_modules/hd-scripts/eslint/index.js"
-    ],
-    "ignorePatterns": [
-      "pw-test.config.cjs"
-    ],
-    "parserOptions": {
-      "project": "./tsconfig.json"
-    },
-    "env": {
-      "mocha": true
-    }
-  },
   "eslintIgnore": [
     "node_modules",
     "coverage",
     "dist",
     "docs",
-    "src/**/*.js",
-    "src/**/*.ts"
+    "src",
+    "**/*.js",
+    "**/*.ts"
   ],
   "engines": {
     "node": ">= 14.0.0"

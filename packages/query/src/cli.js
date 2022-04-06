@@ -81,7 +81,7 @@ const main = async (options) => {
       cid.slice(2).startsWith('can') ||
       cid.slice(2).startsWith('uc')
     ) {
-      search.info(`${cid} 0x${code.toString(16)}`)
+      view.info(`${cid} 0x${code.toString(16)}`)
       break
     }
     code += 1

@@ -1,22 +1,21 @@
-import type { DID, Link, Phantom } from './api'
-import type { KeyPair } from 'ucan-storage/keypair'
+import type { DID, Link, Phantom, Issuer } from '@ipld/dag-ucan'
+import type { StoreService, CARLink } from './query.js'
+// interface StoreService {
+//   add(input: {
+//     with: DID
+//     link: Link
+//   }):
+//     | { status: 'ok'; with: DID; link: Link }
+//     | { status: 'error'; with: DID; link: Link }
+//     | { status: 'pending'; with: DID; link: Link; at: URL }
 
-interface StoreService {
-  add(input: {
-    with: DID
-    link: Link
-  }):
-    | { status: 'ok'; with: DID; link: Link }
-    | { status: 'error'; with: DID; link: Link }
-    | { status: 'pending'; with: DID; link: Link; at: URL }
-
-  remove(input: {
-    with: DID
-    link: Link
-  }):
-    | { can: '/remove'; status: 'ok'; with: DID; link: Link }
-    | { can: '/remove'; status: 'error'; with: DID; link: Link }
-}
+//   remove(input: {
+//     with: DID
+//     link: Link
+//   }):
+//     | { can: '/remove'; status: 'ok'; with: DID; link: Link }
+//     | { can: '/remove'; status: 'error'; with: DID; link: Link }
+// }
 
 interface Access {
   identify(input: { with: DID; as: string }): { with: DID; as: string }
@@ -98,7 +97,7 @@ declare var main: API2<MainService>
 const out = invoke(store, {
   can: 'store/add',
   with: 'did:key:user' as DID,
-  link: 'bag...hash' as any as Link,
+  link: 'bag...hash' as any as CARLink,
 })
 
 interface Invocation<In, Out> {
@@ -117,7 +116,7 @@ export type Query<Service> = Record<string, Input<Service>>
 
 export interface Connection<T> extends Phantom<T> {
   url: URL
-  issuer: KeyPair
+  issuer: Issuer
   audience: DID
 }
 
@@ -130,13 +129,11 @@ const result = query(store, {
   a: {
     can: 'store/add',
     with: 'did:key:user' as DID,
-    link: 'bag...hash' as any as Link,
+    link: 'bag...hash' as any as CARLink,
   },
   b: {
     can: 'store/remove',
     with: 'did:key:user' as DID,
-    link: 'bag...hash2' as any as Link,
+    link: 'bag...hash2' as any as CARLink,
   },
 })
-
-result.b

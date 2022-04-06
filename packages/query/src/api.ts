@@ -1,161 +1,178 @@
-import type { MultihashDigest } from 'multiformats/hashes/interface'
-import type { MultibaseEncoder } from 'multiformats/bases/interface'
+import type * as UCAN from '@ipld/dag-ucan'
+import type { Link, ByteView, DID } from '@ipld/dag-ucan'
 import type { sha256 } from 'multiformats/hashes/sha2'
 
-export interface Signer<A extends string = string> {
-  readonly algorithm: A
-  sign<T>(data: ByteView<T>): Promise<Signature<this, T>>
+// As per https://hackmd.io/YNH1W7XkT9ey90cLX3dF9A#Shards
+export interface Shard {
+  blocks: ByteView<unknown>[]
+  roots?: Set<Link<unknown>>
 }
 
-export type { MultihashDigest, MultibaseEncoder }
+export type CARLink = Link<Shard, 1, 0x0202, typeof sha256.code>
 
-export type QueryService = StoreSrevice & AccessService
+export declare function serve(context: Context): StoreService
 
-export interface StoreSrevice {
-  query(input: Invoke<Add>): unknown
-  query(input: Invoke<Remove>): unknown
+export interface StoreService {
+  /**
+   * Handles `AddInput` request. If DID in `with` field is not associated with
+   * any account responds with `AddError`. If service already has CAR with the
+   * given `link` responds with `AddOk`, otherwise responds with `AddPending`
+   * providing `.to` URL where client can upload desired CAR file.
+   *
+   * @param input
+   */
+  add(input: AddInput): Promise<AddResult>
+
+  /**
+   * Removes give link from the given `DID` group. If DID does not has such
+   * link `RemoveError` is returned. If account responsible for `DID` has no
+   * other `DID`s in which given link is member of user quota is adjusted, by
+   * freeing corresponding space.
+   */
+  remove(input: RemoveInput): Promise<RemoveResult>
 }
 
-export interface AccessService {
-  query(input: Invoke<Identify>): unknown
-  query<C extends Capability[]>(input: Invoke<Authorize<C>>): unknown
-  query(input: CAR<Revoke>): unknown
+export interface Context {
+  proofs: ProofsProvider
+  store: StoreProvider
 }
 
-export interface Add {
+export interface ProofsProvider {
+  /**
+   * Service MAY need to lookup a proof by CID that was previously stored. In
+   * such case it will call this to do a lookup.
+   */
+  get(
+    cid: Link<UCAN.UCAN>
+  ): Result<UCAN.IR, ProofNotFoundError | RevokedError | InvalidProofError>
+
+  /**
+   * Checks status of the given proof by it's CID.
+   */
+  status(
+    cid: Link<UCAN.UCAN>
+  ): Result<void, ProofNotFoundError | RevokedError | InvalidProofError>
+
+  /**
+   * Saves valid proof and associated token. Calling `get` after this should return `UCAN.IR`
+   * unless it has been
+   */
+  validate(
+    cid: Link<UCAN.UCAN>,
+    token: UCAN.IR
+  ): Result<undefined, RevokedError>
+
+  /**
+   * Saves invalid proof so that we can avoid validating it again.
+   */
+  invalidate(
+    cid: Link<UCAN.UCAN>,
+    token: UCAN.IR,
+    reason: Error
+  ): Result<undefined, ProofNotFoundError>
+}
+
+export interface StoreProvider {
+  /**
+   * Service will call this once it verified the UCAN to associate link with a
+   * given DID. Service is unaware if given `DID` is associated with some account
+   * or not, if it is not `StoreProvider` MUST return `UnauthorizedDIDError`.
+   */
+  add(
+    set: DID,
+    link: CARLink,
+    ucan: UCAN.IR
+  ): Result<AddStatus, UnauthorizedDIDError | QuotaViolationError>
+  remove(
+    set: DID,
+    link: CARLink,
+    ucan: UCAN.IR
+  ): Result<undefined, UnauthorizedDIDError | DoesNotHasError>
+}
+
+export interface AddStatus {
+  /**
+   * Should be `ok` if we already have car and we don't need to perform upload.
+   * Otherwise should be `pending`.
+   */
+  status: 'ok' | 'pending'
+}
+
+export interface ProofNotFoundError extends Error {
+  cid: Link
+}
+
+export interface QuotaViolationError extends Error {
+  group: DID
+  link: CARLink
+}
+
+/**
+ * Token has been rovked
+ */
+export interface RevokedError extends Error {
+  cid: Link
+}
+
+export interface InvalidProofError extends Error {
+  cid: Link
+}
+
+export interface UnauthorizedDIDError extends Error {}
+
+export interface DoesNotHasError extends Error {}
+
+export interface AddInput {
   can: 'store/add'
-  with: ToString<DID, `did:key:${string}`>
+  with: UCAN.DID
   link: CARLink
 }
 
-export interface Remove {
-  can: 'store/remove'
-  with: ToString<DID, `did:key:${string}`>
+export type AddResult = AddOk | AddError | AddPending
+
+export interface RemoveInput {
+  can: 'store/add'
+  with: UCAN.DID
+  link: CARLink
+}
+export type RemoveResult = RemoveOk | RemoveError
+
+export interface AddOk {
+  can: 'status/ok'
+  with: UCAN.DID
   link: CARLink
 }
 
-export type Invoke<
-  T extends Capability,
-  To extends DID = DID,
-  From extends DID = DID,
-  Evidence extends Capability[] = [T]
-> = CAR<UCAN<[T], To, From, Evidence>>
+export interface AddError {
+  can: 'status/error'
+  with: UCAN.DID
+  link: CARLink
 
-export interface Identify {
-  can: 'access/identify'
-  with: ToString<DID, `did:key:${string}`>
-  as: Email
+  message: string
 }
 
-export interface Authorize<C extends Capability[]> {
-  can: 'access/authorize'
-  with: ToString<DID, `did:key:${string}`>
+export interface AddPending {
+  can: 'status/pending'
+  with: UCAN.DID
+  link: CARLink
 
-  capabilities?: C
+  /**
+   * S3 signed URL to upload corresponding CAR file to.
+   */
+  to: string
 }
 
-interface CAR<T> extends ByteView<Link<T, 1, 0x0202, typeof sha256.code>> {}
-
-// UCAN represents
-export interface UCAN<
-  Capabilities extends Capability[] = Capability[],
-  To extends DID = DID,
-  From extends DID = DID,
-  Evidence extends Capability[] = Capabilities
-> {
-  issuer: From
-  audience: To
-  lifetimeInSeconds: Time
-  notBefore?: Time
-  capabilities: Capabilities
-  proofs?: Link<UCAN<Evidence>>[]
+export interface RemoveOk {
+  can: 'status/ok'
+  with: UCAN.DID
+  link: CARLink
 }
 
-export interface Revoke<ID extends Link<UCAN> = Link<UCAN>> {
-  issuer: DID
-  revoke: ID
-  challenge: Signature<PrivateKey<DID>, `REVOKE:${ToString<ID>}`>
+export interface RemoveError {
+  can: 'status/error'
+  with: UCAN.DID
+  link: CARLink
+  message: string
 }
 
-type Time = number
-type Email<
-  T extends `${string}@${string}.${string}` = `${string}@${string}.${string}`
-> = T
-
-export type Encoded<In, Out> = Out & Phantom<In>
-export type ToString<In, Out extends string = string> = Encoded<In, Out>
-
-export interface Signature<CryptoKey, Message>
-  extends Phantom<{ privateKey: CryptoKey; message: Message }>,
-    Uint8Array {}
-
-export type PrivateKey<T extends DID> = T extends Phantom<{
-  privateKey: infer K
-}>
-  ? K
-  : never
-
-export interface Capability<
-  Can extends `${string}/${string}` = `${string}/${string}`,
-  With extends `${string}:${string}` = `${string}:${string}`
-> {
-  with: With
-  can: Can
-}
-
-export interface DID
-  extends Phantom<{
-    privateKey: CryptoKey
-    publicKey: CryptoKey
-  }> {
-  toString(): string
-}
-
-export interface Link<
-  T extends unknown = unknown,
-  V extends 0 | 1 = 0 | 1,
-  C extends number = number,
-  A extends number = number
-> extends CID<V, C, A>,
-    Phantom<T> {}
-
-/**
- * Logical representation of *C*ontent *Id*entifier, where `C` is a logical
- * representation of the content it identifies.
- *
- * Note: This is not an actual definition from multiformats because that one
- * refers to a specific class and there for is problematic.
- *
- * @see https://github.com/multiformats/js-multiformats/pull/161
- */
-export interface CID<
-  V extends 0 | 1 = 0 | 1,
-  C extends number = number,
-  A extends number = number
-> {
-  readonly version: V
-  readonly code: C
-  readonly multihash: MultihashDigest<A>
-  readonly bytes: Uint8Array
-
-  toString<Prefix extends string>(encoder?: MultibaseEncoder<Prefix>): string
-}
-
-/**
- * Represents byte encoded representation of the `Data`. It uses type parameter
- * to capture the structure of the data it encodes.
- */
-export interface ByteView<Data> extends Uint8Array, Phantom<Data> {}
-
-/**
- * This is an utility type to retain unused type parameter `T`. It can be used
- * as nominal type e.g. to capture semantics not represented in actual type strucutre.
- */
-export interface Phantom<T> {
-  // This field can not be represented because field name is non-existings
-  // unique symbol. But given that field is optional any object will valid
-  // type contstraint.
-  [PhantomKey]?: T
-}
-
-declare const PhantomKey: unique symbol
+export type Result<T, X> = { ok: true; value: T } | { ok: false; error: X }

@@ -21,7 +21,7 @@ export interface StoreService {
    *
    * @param input
    */
-  add(input: AddInput): Promise<AddResult>
+  add(input: AddInput): AddResult
 
   /**
    * Removes give link from the given `DID` group. If DID does not has such
@@ -29,7 +29,7 @@ export interface StoreService {
    * other `DID`s in which given link is member of user quota is adjusted, by
    * freeing corresponding space.
    */
-  remove(input: RemoveInput): Promise<RemoveResult>
+  remove(input: RemoveInput): RemoveResult
 }
 
 export interface Context {
@@ -131,7 +131,7 @@ export interface AddInput {
 export type AddResult = AddOk | AddError | AddPending
 
 export interface RemoveInput {
-  can: 'store/add'
+  can: 'store/remove'
   with: UCAN.DID
   link: CARLink
 }
