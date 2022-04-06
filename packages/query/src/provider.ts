@@ -4,12 +4,12 @@ export interface Context<DID, Link, Token> {
   store: StoreProvider<DID, Link, Token>
 }
 
-export interface ProofsProvider<T> {
+export interface TokenProvider<T> {
   /**
    * Service MAY need to lookup a proof by CID that was previously stored. In
    * such case it will call this to do a lookup.
    */
-  get(
+  getToken(
     cid: Link<T>
   ): Result<T, ProofNotFoundError | RevokedError | InvalidProofError>
 
@@ -17,7 +17,7 @@ export interface ProofsProvider<T> {
    * Checks status of the given proof by it's CID. Just like get execept when
    * actual value is irrelevant.
    */
-  status(
+  getStatus(
     cid: Link<T>
   ): Result<void, ProofNotFoundError | RevokedError | InvalidProofError>
 
@@ -39,7 +39,7 @@ export interface ProofsProvider<T> {
   ): Result<undefined, ProofNotFoundError>
 }
 
-export interface StoreProvider<DID, Link, Proof> {
+export interface DIDLinkAssociationProvider<DID, Link, Proof> {
   /**
    * Service will call this once it verified the UCAN to associate link with a
    * given DID. Service is unaware if given `DID` is associated with some account
@@ -62,7 +62,7 @@ export interface AddStatus {
    * Should be `ok` if we already have car and we don't need to perform upload.
    * Otherwise should be `pending`.
    */
-  status: 'ok' | 'pending'
+  status: 'in-s3' | 'not-in-s3'
 }
 
 export interface ProofNotFoundError extends Error {
