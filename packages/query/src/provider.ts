@@ -1,7 +1,7 @@
 
 export interface Context<DID, Link, Token> {
   proofs: ProofsProvider<Token>
-  store: StoreProvider<DID, Link, Token>
+  store: DIDLinkAssociationProvider<DID, Link, Token>
 }
 
 export interface TokenProvider<T> {
